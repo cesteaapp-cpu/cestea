@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cestea</title>
+<meta name="theme-color" content="#0f3d2c">
+<meta name="description" content="Despensa, lista de la compra, menús y ofertas para toda la familia.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cestea">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: mercado de barrio en el móvil. Cabecera verde bosque con cifras clave, grupos por sección con icono de color, barra de pestañas flotante. */
+:root{
+  --bg:#f3f7ef; --surface:#ffffff; --surface2:#e8f0e3; --fg:#12261c; --muted:#58695f; --line:#dce6d8; --line2:#b4c6b6;
+  --accent:#1b7f4d; --accent-fg:#ffffff; --deep:#0f3d2c; --deep-fg:#f1faea; --lemon:#f5d547; --lemon-fg:#2a2300;
+  --sale:#d9422a; --sale-bg:#fde7e1; --info:#2b6cb0; --info-bg:#e1ecf8; --ok-bg:#dcf1e2;
+  --c0:#2f9e55; --c1:#d9573f; --c2:#3b82c4; --c3:#c98a1b; --c4:#1fa3b5; --c5:#8a5cc7; --c6:#c2478a; --c7:#6b7a70;
+  --m-horno:#e0762b; --m-microondas:#3b82c4; --m-induccion:#8a5cc7; --m-airfryer:#1f9d8f;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --font-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1511; --surface:#16231c; --surface2:#1f3027; --fg:#e8f1ea; --muted:#92a89a; --line:#273a30; --line2:#3a5246;
+  --accent:#4fc487; --accent-fg:#08150e; --deep:#0a2a1f; --deep-fg:#eef9e8; --lemon:#f2d34a; --lemon-fg:#2a2300;
+  --sale:#ff8468; --sale-bg:#3a1f19; --info:#7fb4ee; --info-bg:#1a2b3f; --ok-bg:#183126;
+  --c0:#5fcf86; --c1:#ff8a72; --c2:#78b3ee; --c3:#e8b04a; --c4:#56cfe0; --c5:#b896ee; --c6:#f07db6; --c7:#a3b3a9;
+  --m-horno:#ff9b57; --m-microondas:#78b3ee; --m-induccion:#b896ee; --m-airfryer:#4fd1c0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1511; --surface:#16231c; --surface2:#1f3027; --fg:#e8f1ea; --muted:#92a89a; --line:#273a30; --line2:#3a5246;
+  --accent:#4fc487; --accent-fg:#08150e; --deep:#0a2a1f; --deep-fg:#eef9e8; --lemon:#f2d34a; --lemon-fg:#2a2300;
+  --sale:#ff8468; --sale-bg:#3a1f19; --info:#7fb4ee; --info-bg:#1a2b3f; --ok-bg:#183126;
+  --c0:#5fcf86; --c1:#ff8a72; --c2:#78b3ee; --c3:#e8b04a; --c4:#56cfe0; --c5:#b896ee; --c6:#f07db6; --c7:#a3b3a9;
+  --m-horno:#ff9b57; --m-microondas:#78b3ee; --m-induccion:#b896ee; --m-airfryer:#4fd1c0; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--font-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 110px}
+.wrap{max-width:720px;margin:0 auto}
+h1{font:800 clamp(30px,8vw,40px)/1 var(--font-display);margin:0;letter-spacing:-.02em}
+h2{font:800 19px/1.15 var(--font-display);margin:0 0 10px;letter-spacing:-.01em}
+h3{font:700 12px/1 var(--font-body);text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:20px 0 8px}
+
+/* cabecera */
+.hero{position:relative;overflow:hidden;margin-top:max(12px,env(safe-area-inset-top,0px));background:var(--deep);color:var(--deep-fg);border-radius:26px;padding:18px 18px 16px;
+  background-image:radial-gradient(circle at 92% -10%,rgba(245,213,71,.34),transparent 46%),radial-gradient(circle at 0% 120%,rgba(217,66,42,.30),transparent 42%)}
+.heroTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:8px;font:700 13px var(--font-body);letter-spacing:.04em;text-transform:uppercase;color:var(--lemon)}
+.brand i{width:30px;height:30px;border-radius:10px;background:var(--lemon);color:var(--lemon-fg);display:grid;place-items:center}
+.brand svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tag{margin:6px 0 16px;color:color-mix(in srgb,var(--deep-fg) 76%,transparent);font-size:14.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
+.kpi{background:rgba(255,255,255,.09);border-radius:16px;padding:10px 12px}
+.kpi b{display:block;font:800 26px/1.05 var(--font-display);color:var(--lemon);font-variant-numeric:tabular-nums}
+.kpi.sale b{color:#ffa591}
+.kpi span{font-size:12px;color:color-mix(in srgb,var(--deep-fg) 72%,transparent)}
+.sync{font-size:12px;color:color-mix(in srgb,var(--deep-fg) 78%,transparent);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#6ee7a0} .dot.off{background:#ff8468}
+
+/* pestañas flotantes */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;pointer-events:none;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.tabs nav{pointer-events:auto;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;width:100%;max-width:560px;background:var(--deep);border-radius:24px;padding:6px;box-shadow:0 12px 30px rgba(6,28,18,.32)}
+.tab{position:relative;background:none;border:0;color:color-mix(in srgb,var(--deep-fg) 66%,transparent);font:600 10.5px var(--font-body);display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border-radius:18px;cursor:pointer}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-selected="true"]{background:var(--lemon);color:var(--lemon-fg)}
+.tab .n{position:absolute;top:3px;left:calc(50% + 6px);background:var(--sale);color:#fff;border-radius:9px;font-size:10px;padding:1px 5px;font-weight:700}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.pane{padding-top:6px}
+section.pane[hidden]{display:none}
+
+/* base */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 11px;min-width:0}
+input[type=number]{width:98px}
+input.name{flex:1 1 140px}
+textarea{width:100%;resize:vertical}
+.btn{font:700 14px var(--font-body);border:1px solid var(--line2);background:var(--surface);color:var(--fg);border-radius:12px;padding:10px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn.ghost{background:none}
+.btn.small{padding:6px 10px;font-size:12.5px;border-radius:10px}
+.btn:disabled{opacity:.55;cursor:default}
+.chip{font:600 13px var(--font-body);border:1px solid var(--line2);background:var(--surface);color:var(--fg);border-radius:999px;padding:7px 13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--deep);color:var(--lemon);border-color:var(--deep)}
+
+/* grupos por sección */
+.grp{display:flex;align-items:center;gap:10px;margin:22px 0 8px}
+.grp h3{margin:0;font:800 16px/1 var(--font-display);text-transform:none;letter-spacing:-.005em;color:var(--fg)}
+.cat{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--cc) 17%,var(--surface));color:var(--cc);flex:none}
+.cat svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.c0{--cc:var(--c0)}.c1{--cc:var(--c1)}.c2{--cc:var(--c2)}.c3{--cc:var(--c3)}.c4{--cc:var(--c4)}.c5{--cc:var(--c5)}.c6{--cc:var(--c6)}.c7{--cc:var(--c7)}
+.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .t{flex:1;min-width:0}
+.item .t b{font-weight:600;overflow-wrap:anywhere}
+.item.done .t b{text-decoration:line-through;color:var(--muted)}
+.item.done{opacity:.62}
+.sub{font-size:12.5px;color:var(--muted)}
+.qty{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;white-space:nowrap}
+.x{background:none;border:0;color:var(--muted);font-size:21px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px}
+.check{appearance:none;-webkit-appearance:none;width:26px;height:26px;flex:none;border-radius:50%;border:2px solid var(--line2);background:var(--surface);display:grid;place-content:center;cursor:pointer;margin:0}
+.check:checked{background:var(--accent);border-color:var(--accent)}
+.check:checked::after{content:"";width:6px;height:11px;border:solid var(--accent-fg);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.badge{display:inline-block;font:700 11px var(--font-body);border-radius:7px;padding:2px 7px;white-space:nowrap}
+.b-sale{background:var(--sale-bg);color:var(--sale)} .b-pan{background:var(--ok-bg);color:var(--accent)} .b-list{background:var(--info-bg);color:var(--info)} .b-buy{background:var(--sale-bg);color:var(--sale)} .b-old{background:var(--surface2);color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:22px 14px}
+.empty b{display:block;color:var(--fg);font:800 18px var(--font-display);margin-bottom:4px}
+.ill{width:104px;height:78px;display:block;margin:0 auto 10px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 15px;border-radius:12px;font-size:13.5px;z-index:40;max-width:90vw}
+
+.zgrid{display:flex;flex-wrap:wrap;gap:8px}
+.chipx{display:inline-flex;align-items:center}
+input[type=search]{width:100%}
+.chipx .x{padding:2px 6px;font-size:18px}
+/* menú */
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+.stepper button{background:var(--surface2);border:0;color:var(--fg);width:38px;height:38px;font-size:19px;cursor:pointer}
+.stepper span{min-width:46px;text-align:center;font:800 17px var(--font-display);font-variant-numeric:tabular-nums}
+.recipe h2{margin:2px 0 0;font-size:21px}
+.recipe .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 8px}
+.mic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--cc) 18%,var(--surface));color:var(--cc)}
+.mic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.m-horno{--cc:var(--m-horno)}.m-microondas{--cc:var(--m-microondas)}.m-induccion{--cc:var(--m-induccion)}.m-airfryer{--cc:var(--m-airfryer)}
+.ing{display:flex;gap:8px;align-items:baseline;justify-content:space-between;padding:5px 0;font-size:14px}
+.ing .q{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+details summary{cursor:pointer;color:var(--accent);font-weight:700;margin-top:8px}
+details ol{padding-left:20px;margin:8px 0 0}
+
+/* ofertas */
+.price{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;white-space:nowrap}
+.price b{font:800 19px var(--font-display);color:var(--fg);font-variant-numeric:tabular-nums}
+.price.sale b{color:var(--sale)}
+.price s{font-size:12px;color:var(--muted)}
+.sticker{display:inline-block;background:var(--sale);color:#fff;font:800 12px var(--font-display);padding:3px 8px;border-radius:8px;transform:rotate(-4deg)}
+.wrow{display:grid;grid-template-columns:104px 1fr;gap:10px;padding:9px 8px;border-bottom:1px solid var(--line);border-radius:12px}
+.wrow:last-of-type{border-bottom:0}
+.wrow.now{background:color-mix(in srgb,var(--lemon) 26%,transparent)}
+.wrow.now .wd::after{content:" · hoy";color:var(--sale);font-weight:800}
+.wd{font-weight:700}
+
+/* gastos */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px}
+.stat:nth-child(1){background:var(--deep);color:var(--deep-fg);border-color:var(--deep)}
+.stat:nth-child(1) b{color:var(--lemon)}
+.stat:nth-child(1) span{color:color-mix(in srgb,var(--deep-fg) 72%,transparent)}
+.stat b{display:block;font:800 24px/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+svg.chart{width:100%;height:auto;display:block}
+svg.chart .bar{fill:var(--accent);opacity:.42} svg.chart .bar.last{opacity:1}
+svg.chart text{fill:var(--muted);font:11px var(--font-body)} svg.chart .ax{stroke:var(--line2);stroke-width:1}
+.banner{background:var(--sale-bg);color:var(--sale);border-radius:12px;padding:9px 13px;font-size:13px;margin-top:10px}
+.photoRow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){.pane{animation:in .2s ease-out}@keyframes in{from{opacity:.4;transform:translateY(5px)}}}
+
+:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* acceso */
+.auth{position:fixed;inset:0;z-index:60;background:var(--bg);overflow:auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+.auth .box{width:100%;max-width:420px;margin:4vh auto 0}
+.auth .logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.auth .logo img{width:52px;height:52px;border-radius:14px}
+.auth h1{font:800 34px/1 var(--font-display);margin:0;letter-spacing:-.02em}
+.auth .lead{color:var(--muted);margin:6px 0 18px}
+.auth .card{margin-bottom:14px}
+.auth label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.auth input{width:100%}
+.auth .msg{font-size:13px;margin-top:10px;color:var(--sale);min-height:18px}
+.auth .msg.ok{color:var(--accent)}
+.auth .link{background:none;border:0;color:var(--accent);font:inherit;padding:6px 0;text-decoration:underline;cursor:pointer}
+.code{font:800 28px/1 var(--font-display);letter-spacing:.14em;background:var(--surface2);border-radius:14px;padding:12px 14px;display:inline-block}
+.members{margin:8px 0 0;padding:0;list-style:none}.members li{padding:6px 0;border-bottom:1px solid var(--line)}
+</style>
+</head><body>
+<div id="auth" class="auth" hidden><div class="box" id="authBox"></div></div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="heroTop">
+      <div class="brand"><i><svg viewBox="0 0 24 24"><path d="M3 9h18l-2 11H5z"/><path d="M8 9l3-5M16 9l-3-5"/></svg></i>Despensa · Menús · Ofertas</div>
+      <div class="sync"><span class="dot" id="dot"></span><span id="syncTxt">Conectando…</span></div>
+    </div>
+    <h1>Cestea</h1>
+    <p class="tag">Lo que hay en casa, lo que falta y dónde sale más barato.</p>
+    <div class="kpis">
+      <div class="kpi"><b id="kP">0</b><span>productos en despensa</span></div>
+      <div class="kpi"><b id="kL">0</b><span>por comprar</span></div>
+      <div class="kpi sale"><b id="kO">0</b><span>con oferta ahora</span></div>
+      <div class="kpi"><b id="kG">0 €</b><span>gastado este mes</span></div>
+    </div>
+  </header>
+  <div id="banner"></div>
+
+  <!-- DESPENSA -->
+  <section class="pane" id="p-despensa" hidden>
+    <div class="card stack">
+      <h2>Lo que tengo en casa</h2>
+      <form class="row" id="fPantry">
+        <input class="name" id="pName" placeholder="Producto (ej. arroz, huevos)" autocomplete="off" required>
+        <input type="number" id="pQty" min="0" step="any" value="1" aria-label="Cantidad">
+        <select id="pUnit" aria-label="Unidad"></select>
+        <button class="btn primary" type="submit">Añadir</button>
+      </form>
+      <div class="row">
+        <button class="btn" id="btnPhoto" type="button" hidden>📷 Detectar con foto</button>
+        <input type="file" id="photoIn" accept="image/*" multiple hidden>
+        <span class="sub" id="photoHelp">Haz una foto a la despensa o la nevera y la reviso.</span>
+      </div>
+      <div id="photoRes"></div>
+    </div>
+    <div id="l-pantry"></div>
+  </section>
+
+  <!-- LISTA -->
+  <section class="pane" id="p-lista" hidden>
+    <div class="card stack">
+      <h2>Lista de la compra</h2>
+      <form class="row" id="fList">
+        <input class="name" id="lName" placeholder="Qué hay que comprar" autocomplete="off" required>
+        <input type="number" id="lQty" min="0" step="any" value="1" aria-label="Cantidad">
+        <select id="lUnit" aria-label="Unidad"></select>
+        <button class="btn primary" type="submit">Añadir</button>
+      </form>
+      <div class="row"><span class="sub">Supermercado para las ofertas:</span><select id="storeSel" aria-label="Supermercado"></select></div>
+    </div>
+    <div class="card stack" id="catCard" style="margin-top:12px">
+      <h2>Catálogo de precios</h2>
+      <input id="cQ" type="search" placeholder="Busca un producto (ej. leche, aceite de oliva)" autocomplete="off" aria-label="Buscar en el catálogo">
+      <div id="cRes"></div>
+      <details><summary>Añadir un precio a mano</summary>
+        <form class="row" id="fCat" style="margin-top:10px">
+          <input class="name" id="cName" placeholder="Producto" required>
+          <select id="cStore" aria-label="Supermercado"></select>
+          <input type="number" id="cPrice" min="0" step="0.01" placeholder="Precio €" required>
+          <input id="cFormato" placeholder="Formato (1 l)" style="width:110px" aria-label="Formato">
+          <select id="cCat" aria-label="Sección"></select>
+          <button class="btn primary" type="submit">Guardar</button>
+        </form>
+      </details>
+    </div>
+    <div class="card row" id="estimate" hidden style="margin-top:12px"></div>
+    <div id="l-list"></div>
+    <div class="card stack" id="finish" hidden>
+      <h2>Terminar la compra</h2>
+      <div class="sub">Los productos marcados pasan a la despensa y se guarda lo que ha costado la cesta.</div>
+      <div class="row">
+        <select id="fStore" aria-label="Dónde has comprado"></select>
+        <input type="number" id="fTotal" min="0" step="0.01" placeholder="Total €" aria-label="Total en euros">
+        <button class="btn primary" id="btnFinish" type="button">Guardar cesta</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="btnToFinish" type="button">Terminar compra…</button><button class="btn ghost" id="btnClearDone" type="button">Quitar marcados</button></div>
+  </section>
+
+  <!-- MENU -->
+  <section class="pane" id="p-menu" hidden>
+    <div class="card stack">
+      <h2>Menú de la semana</h2>
+      <div class="row"><span>Comensales</span>
+        <div class="stepper"><button type="button" data-act="com-" aria-label="Menos comensales">−</button><span id="comN">2</span><button type="button" data-act="com+" aria-label="Más comensales">+</button></div>
+        <span>Días</span><select id="mDias"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>7</option></select>
+      </div>
+      <div class="row"><select id="mDieta" aria-label="Dieta, creencia o plan"></select><input type="number" id="mKcal" min="0" step="50" placeholder="kcal/día (opcional)" aria-label="Calorías al día por persona, opcional" style="width:150px"></div>
+      <div><div class="sub" style="margin-bottom:6px">Alérgenos a evitar</div><div class="row" id="mAlerg"></div></div>
+      <div class="row" id="mComidas"></div>
+      <div><div class="sub" style="margin-bottom:6px">Aparatos que puedo usar</div><div class="row" id="mAparatos"></div></div>
+      <textarea id="mPref" rows="2" placeholder="Preferencias o alergias (ej. sin gluten, rápido entre semana)"></textarea>
+      <div class="row"><button class="btn primary" id="btnGen" type="button">Crear menú con mi despensa</button><button class="btn" id="btnWeek" type="button">Semana completa (7 días)</button><button class="btn" id="btnStop" type="button" hidden>Parar</button><span class="sub" id="genMsg"></span></div>
+    </div>
+    <div id="l-menu"></div>
+  </section>
+
+  <!-- OFERTAS -->
+  <section class="pane" id="p-ofertas" hidden>
+    <div class="card stack">
+      <h2>Ofertas</h2>
+      <div class="row" id="offStores"></div>
+      <div class="sub">Busco en folletos y webs las ofertas de los productos de tu lista en los supermercados que marcaste en Zona. También se actualizan solas cada lunes si está activada la búsqueda semanal.</div>
+      <div class="row"><button class="btn primary" id="btnBuscar" type="button">🔎 Buscar ofertas ahora</button><span class="sub" id="buscarMsg"></span></div>
+      <div class="row" hidden><input class="grow" id="askTxt" readonly aria-label="Mensaje para Claude"><button class="btn" id="btnCopy" type="button">Copiar</button></div>
+    </div>
+    <div id="l-ofertas"></div>
+    <div class="card" id="when" style="margin-top:12px">
+      <h2>Cuándo mirar las ofertas</h2>
+      <div class="wrow" data-d="1"><b class="wd">Lidl y Aldi</b><span>Folleto nuevo cada lunes, válido de lunes a domingo.</span></div>
+      <div class="wrow" data-d="3"><b class="wd">Dia</b><span>Folleto nuevo los miércoles.</span></div>
+      <div class="wrow" data-d="5,2,4"><b class="wd">Carrefour</b><span>Sin día fijo: sus folletos suelen empezar en viernes, martes o jueves.</span></div>
+      <div class="wrow" data-d="4"><b class="wd">Alcampo</b><span>Suele cambiar los jueves, con folletos de hasta un mes.</span></div>
+      <div class="wrow" data-d="6,1"><b class="wd">Mercadona</b><span>No publica folleto. Los frescos rebajados con etiqueta amarilla se ven más el sábado por la tarde o a primera hora del lunes.</span></div>
+      <div class="sub" style="margin-top:8px">Mejor momento para revisar: lunes por la mañana, y miércoles para Dia. Calendario orientativo según agregadores de folletos y prensa, no oficial.</div>
+    </div>
+    <details class="card" style="margin-top:12px"><summary>Añadir una oferta a mano</summary>
+      <form class="row" id="fOffer" style="margin-top:10px">
+        <input class="name" id="oProd" placeholder="Producto" required>
+        <select id="oStore" aria-label="Supermercado"></select>
+        <input type="number" id="oPrice" min="0" step="0.01" placeholder="Precio €" required>
+        <input type="number" id="oWas" min="0" step="0.01" placeholder="Antes €">
+        <input type="date" id="oUntil" aria-label="Válida hasta">
+        <button class="btn primary" type="submit">Guardar</button>
+      </form>
+    </details>
+  </section>
+
+  <!-- ZONA -->
+  <section class="pane" id="p-zona" hidden>
+    <div class="card stack">
+      <h2>Mi zona</h2>
+      <div class="row"><select id="zCom" class="grow" aria-label="Comunidad autónoma"></select><select id="zProv" class="grow" aria-label="Provincia"></select></div>
+      <div class="row"><input id="zCP" inputmode="numeric" maxlength="5" placeholder="Código postal" style="width:150px" aria-label="Código postal"><span class="sub" id="zCPmsg">Escríbelo y detecto tu zona</span></div>
+      <div class="sub">Elige tu comunidad para ver los supermercados que solo hay en tu región. Marca los que usas: sus ofertas se revisan cada semana.</div>
+    </div>
+    <div id="l-zona"></div>
+    <div class="card stack" style="margin-top:12px"><h2>¿Falta alguno?</h2>
+      <form class="row" id="fExtra"><input class="name" id="zExtra" placeholder="Nombre del supermercado" required><button class="btn primary" type="submit">Añadir</button></form></div>
+    <div class="card stack" id="famCard" style="margin-top:12px"><h2>Mi familia</h2><div id="famBody"></div></div>
+  </section>
+
+  <!-- GASTOS -->
+  <section class="pane" id="p-gastos" hidden>
+    <div id="l-gastos"></div>
+  </section>
+</div>
+
+<div class="tabs"><nav role="tablist" id="tabs">
+  <button class="tab" role="tab" data-tab="despensa"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M9 8h6"/></svg>Despensa</button>
+  <button class="tab" role="tab" data-tab="lista"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Lista</button>
+  <button class="tab" role="tab" data-tab="menu"><svg viewBox="0 0 24 24"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/></svg>Menú</button>
+  <button class="tab" role="tab" data-tab="ofertas"><svg viewBox="0 0 24 24"><path d="M3 12l9-9h8v8l-9 9z"/><circle cx="16" cy="8" r="1.5"/></svg>Ofertas</button>
+  <button class="tab" role="tab" data-tab="zona"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Zona</button>
+  <button class="tab" role="tab" data-tab="gastos"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Gastos</button>
+</nav></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script>
+(function(){
+"use strict";
+var UNITS=["ud","g","kg","ml","l","paquete"];
+var CATS=["Fruta y verdura","Carne y pescado","Lácteos y huevos","Despensa seca","Congelados","Bebidas","Limpieza e higiene","Otros"];
+var NATIONAL=["Mercadona","Carrefour","Lidl","Dia","Alcampo","Aldi","El Corte Inglés"];
+var REG={"Andalucía":["Covirán","Supersol"],"Aragón":["Consum"],"Asturias":["Alimerka","Gadis","Froiz"],"Illes Balears":["Eroski","Spar"],"Canarias":["Hiperdino","Spar"],"Cantabria":["Lupa","BM","Covirán"],"Castilla y León":["Alimerka","Gadis","Eroski"],"Castilla-La Mancha":["Ahorramas","Consum","Covirán"],"Cataluña":["Bonpreu","Caprabo","Condis","Sorli","Spar","Consum","Eroski"],"Ceuta y Melilla":[],"Comunidad Valenciana":["Consum","Mas y Mas","Charter"],"Extremadura":["Covirán"],"Galicia":["Gadis","Froiz","Eroski"],"Comunidad de Madrid":["Ahorramas","Supeco"],"Región de Murcia":["Consum","Covirán"],"Navarra":["Eroski","Caprabo"],"País Vasco":["Eroski","BM"],"La Rioja":["Eroski"]};
+var PROV={"Andalucía":["Almería","Cádiz","Córdoba","Granada","Huelva","Jaén","Málaga","Sevilla"],"Aragón":["Huesca","Teruel","Zaragoza"],"Asturias":["Asturias"],"Illes Balears":["Illes Balears"],"Canarias":["Las Palmas","Santa Cruz de Tenerife"],"Cantabria":["Cantabria"],"Castilla y León":["Ávila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"],"Castilla-La Mancha":["Albacete","Ciudad Real","Cuenca","Guadalajara","Toledo"],"Cataluña":["Barcelona","Girona","Lleida","Tarragona"],"Ceuta y Melilla":["Ceuta","Melilla"],"Comunidad Valenciana":["Alicante","Castellón","Valencia"],"Extremadura":["Badajoz","Cáceres"],"Galicia":["A Coruña","Lugo","Ourense","Pontevedra"],"Comunidad de Madrid":["Madrid"],"Región de Murcia":["Murcia"],"Navarra":["Navarra"],"País Vasco":["Álava","Bizkaia","Gipuzkoa"],"La Rioja":["La Rioja"]};
+var CP_PROV={"01":"Álava","02":"Albacete","03":"Alicante","04":"Almería","05":"Ávila","06":"Badajoz","07":"Illes Balears","08":"Barcelona","09":"Burgos","10":"Cáceres","11":"Cádiz","12":"Castellón","13":"Ciudad Real","14":"Córdoba","15":"A Coruña","16":"Cuenca","17":"Girona","18":"Granada","19":"Guadalajara","20":"Gipuzkoa","21":"Huelva","22":"Huesca","23":"Jaén","24":"León","25":"Lleida","26":"La Rioja","27":"Lugo","28":"Madrid","29":"Málaga","30":"Murcia","31":"Navarra","32":"Ourense","33":"Asturias","34":"Palencia","35":"Las Palmas","36":"Pontevedra","37":"Salamanca","38":"Santa Cruz de Tenerife","39":"Cantabria","40":"Segovia","41":"Sevilla","42":"Soria","43":"Tarragona","44":"Teruel","45":"Toledo","46":"Valencia","47":"Valladolid","48":"Bizkaia","49":"Zamora","50":"Zaragoza","51":"Ceuta","52":"Melilla"};
+var STORES=[];
+var METODOS={horno:"Horno",microondas:"Microondas",induccion:"Placa de inducción",airfryer:"Air fryer"};
+var DIETAS={normal:{l:"Sin restricciones",bans:[],p:"sin restricciones"},
+vegetariana:{l:"Vegetariana",bans:["carne","cerdo","pescado","marisco"],p:"vegetariana: sin carne ni pescado ni marisco"},
+vegana:{l:"Vegana",bans:["carne","cerdo","pescado","marisco","lacteos","huevo","miel"],p:"vegana estricta: ningún producto animal; cuida proteína, B12 y hierro"},
+sin_gluten:{l:"Sin gluten (celiaquía)",bans:["gluten"],p:"sin gluten estricto para celíacos: nada de trigo, cebada, centeno, avena común ni derivados; usa alternativas naturalmente sin gluten"},
+sin_lactosa:{l:"Sin lactosa",bans:["lacteos"],p:"sin lactosa ni lácteos"},
+halal:{l:"Halal",bans:["cerdo"],p:"halal: sin cerdo ni derivados ni alcohol; la carne debe ser halal"},
+kosher:{l:"Kosher",bans:["cerdo","marisco"],p:"kosher: sin cerdo ni marisco, y sin mezclar carne con lácteos en la misma comida"},
+mediterranea:{l:"Mediterránea",bans:[],p:"dieta mediterránea: verdura, legumbres, pescado, aceite de oliva, poca carne roja"},
+fit_def:{l:"Fitness · definición",bans:[],p:"fitness para definición: déficit calórico moderado, proteína alta (1,8-2,2 g por kg), saciante, pocos ultraprocesados"},
+fit_vol:{l:"Fitness · volumen",bans:[],p:"fitness para ganar músculo: ligero superávit calórico, proteína alta y carbohidratos suficientes"},
+proteica:{l:"Alta en proteína",bans:[],p:"alta en proteína en cada comida"},
+keto:{l:"Baja en carbohidratos / keto",bans:[],p:"baja en carbohidratos: sin pasta, arroz, pan ni azúcar"},
+sin_azucar:{l:"Sin azúcar añadido",bans:[],p:"sin azúcar añadido ni ultraprocesados"}};
+var ALERG=["gluten","lacteos","huevo","frutos_secos","cacahuete","pescado","marisco","soja","sesamo","apio","mostaza","sulfitos","altramuces"];
+var LBL={gluten:"gluten",lacteos:"lácteos",huevo:"huevo",frutos_secos:"frutos secos",cacahuete:"cacahuete",pescado:"pescado",marisco:"marisco",soja:"soja",sesamo:"sésamo",apio:"apio",mostaza:"mostaza",sulfitos:"sulfitos",altramuces:"altramuces",cerdo:"cerdo",carne:"carne",miel:"miel"};
+var KW={gluten:["trigo","harina","pasta","pan","cuscus","cebada","centeno","avena","seitan","galleta","empanado","rebozado","macarron","espagueti","tallarin","fideo","bulgur","semola"],lacteos:["leche","queso","yogur","nata","mantequilla","requeson","kefir","mozzarella","parmesano","bechamel"],huevo:["huevo","mayonesa","clara","yema"],frutos_secos:["almendra","nuez","nueces","avellana","pistacho","anacardo","pinon","castana"],cacahuete:["cacahuete","mani"],pescado:["atun","salmon","merluza","bacalao","pescado","anchoa","sardina","lubina","dorada","caballa","trucha"],marisco:["gamba","langostino","mejillon","calamar","pulpo","almeja","marisco","sepia","cangrejo","vieira"],soja:["soja","tofu","edamame","tempeh"],sesamo:["sesamo","tahini"],apio:["apio"],mostaza:["mostaza"],sulfitos:["vino","vinagre"],altramuces:["altramuz"],cerdo:["cerdo","jamon","bacon","panceta","chorizo","lomo","salchicha","beicon","longaniza"],carne:["pollo","ternera","vacuno","cordero","pavo","carne","hamburguesa","conejo","pato"],miel:["miel"]};
+function kwHit(k,name){var words=norm(name).split(" ");return (KW[k]||[]).some(function(w){w=norm(w);return w.length<=4?words.indexOf(w)>-1:words.some(function(x){return x.indexOf(w)===0})})}
+function bannedKeys(){var d=(DIETAS[S.set.dieta]||DIETAS.normal).bans.concat(S.set.alergenos||[]);return d.filter(function(k,i){return d.indexOf(k)===i})}
+function allergenBadges(r){var hits=bannedKeys().filter(function(k){return r.ingredientes.some(function(g){return kwHit(k,g.n)})});return hits.map(function(k){return'<span class="badge b-buy">Posible '+esc(LBL[k])+'</span>'}).join(" ")}
+var S={pantry:[],list:[],offers:[],catalog:[],baskets:[],menu:null,canWrite:true,tab:"lista",
+  set:{comensales:2,tienda:"Mercadona",aparatos:["horno","microondas","induccion","airfryer"],dias:3,comidas:["Comida","Cena"],pref:"",dieta:"normal",alergenos:[],kcal:0,comunidad:"Comunidad de Madrid",provincia:"Madrid",favs:[],extra:[],cp:""},
+  photoItems:[],genCtl:null,filterStore:null,finishing:false};
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").trim().split(/\s+/).map(function(w){return w.length>3?w.replace(/(es|s)$/,""):w}).join(" ")}
+function same(a,b){var x=norm(a),y=norm(b);return !!x&&!!y&&(x===y||x.indexOf(y)>-1||y.indexOf(x)>-1)}
+function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function eur(n){return(Number(n)||0).toLocaleString("es-ES",{style:"currency",currency:"EUR"})}
+function fmtQ(q,u){q=Number(q)||0;if(u==="ud")q=Math.ceil(q-1e-9);else if(u==="g"||u==="ml")q=q>=100?Math.round(q/10)*10:Math.round(q/5)*5||5;else q=Math.round(q*100)/100;return q.toLocaleString("es-ES")+(u?" "+u:"")}
+function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(function(){t.hidden=true},2600)}
+function opts(arr,sel){return arr.map(function(a){return'<option'+(a===sel?" selected":"")+'>'+esc(a)+'</option>'}).join("")}
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+
+/* ---------- almacén: Supabase (tabla items) con copia local ---------- */
+var sb=null,H=null,started=false,cache={},subs={},chan=null,online=true,sample=null,canImages=true;
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function cacheList(col){var m=cache[col]||{};return Object.keys(m).map(function(id){return Object.assign({id:id},m[id])})}
+function notify(col){(subs[col]||[]).forEach(function(f){f(cacheList(col))})}
+function saveOffline(){if(H)lsSet("cestea-cache-"+H.id,cache)}
+async function loadAll(){
+  var r=await sb.from("items").select("coll,id,data").eq("hogar_id",H.id).limit(5000);
+  if(r.error)throw r.error;
+  cache={};r.data.forEach(function(x){(cache[x.coll]=cache[x.coll]||{})[x.id]=x.data});
+  Object.keys(subs).forEach(notify);saveOffline();
+}
+function subscribe(){
+  if(chan)sb.removeChannel(chan);
+  chan=sb.channel("h-"+H.id).on("postgres_changes",{event:"*",schema:"public",table:"items",filter:"hogar_id=eq."+H.id},function(p){
+    var row=p.eventType==="DELETE"?p.old:p.new;if(!row||!row.coll||(row.hogar_id&&row.hogar_id!==H.id))return;
+    if(p.eventType==="DELETE")delete (cache[row.coll]||{})[row.id];else(cache[row.coll]=cache[row.coll]||{})[row.id]=row.data;
+    notify(row.coll);saveOffline();
+  }).subscribe(function(st){
+    if(st==="SUBSCRIBED"){markSync(true);loadAll().catch(function(){})}
+    else if(st==="CHANNEL_ERROR"||st==="TIMED_OUT"||st==="CLOSED")markSync(false);
+  });
+}
+async function put(col,id,d){
+  (cache[col]=cache[col]||{})[id]=d;notify(col);saveOffline();
+  var r=await sb.from("items").upsert({hogar_id:H.id,coll:col,id:id,data:d,updated_at:new Date().toISOString()});
+  if(r.error){markSync(false);loadAll().catch(function(){});throw r.error}
+}
+var store={
+  watch:function(col,cb){(subs[col]=subs[col]||[]).push(cb);cb(cacheList(col))},
+  add:async function(col,d){var id=uid();await put(col,id,d);return id},
+  set:async function(col,id,d){await put(col,id,d)},
+  upd:async function(col,id,d){await put(col,id,Object.assign({},(cache[col]||{})[id]||{},d))},
+  del:async function(col,id){
+    delete (cache[col]||{})[id];notify(col);saveOffline();
+    var r=await sb.from("items").delete().match({hogar_id:H.id,coll:col,id:id});
+    if(r.error){markSync(false);loadAll().catch(function(){});throw r.error}
+  }
+};
+function markSync(ok){online=ok;$("dot").className="dot"+(ok?"":" off");$("syncTxt").textContent=ok?"Sincronizado con tu familia":"Sin conexión"}
+
+/* ---------- IA: función edge "ia" (opcional) ---------- */
+function jsonFrom(t){t=String(t||"");var a=t.search(/[\[{]/);if(a<0)throw 0;var c=t[a]==="{"?"}":"]";var b=t.lastIndexOf(c);return JSON.parse(t.slice(a,b+1))}
+async function imgB64(f){var bmp=await createImageBitmap(f);var k=Math.min(1,1280/Math.max(bmp.width,bmp.height));var c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.8).split(",")[1]}
+sample={json:async function(prompt,o){
+  o=o||{};var imgs=[];if(o.images)for(var f of o.images)imgs.push(await imgB64(f));
+  var ss=await sb.auth.getSession();var tok=ss.data.session&&ss.data.session.access_token;if(!tok)throw{code:"auth"};
+  var res=await fetch(window.CESTEA.url+"/functions/v1/ia",{method:"POST",signal:o.signal,headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok,apikey:window.CESTEA.key},body:JSON.stringify({prompt:prompt,tier:o.modelTier||"default",images:imgs})});
+  if(res.status===404)throw{code:"ia_off"};
+  var j=await res.json().catch(function(){return{}});
+  if(!res.ok){if(res.status===429||j.error==="limite")throw{code:"rate_limited"};if(j.error==="sin_clave")throw{code:"ia_off"};throw{code:"error"}}
+  try{return jsonFrom(j.text)}catch(e){throw{code:"invalid_json"}}
+}};
+async function run(fn){if(!S.canWrite){toast("Solo tienes permiso de lectura");return}try{await fn()}catch(e){console.warn(e);toast("No se pudo guardar. Inténtalo de nuevo.")}}
+function saveSet(){return run(function(){return store.set("settings","main",S.set)})}
+
+/* ---------- ofertas ---------- */
+function activeOffer(o){return !o.until||o.until>=today()}
+function offersFor(name,store_){return S.offers.filter(function(o){return activeOffer(o)&&same(o.product,name)&&(!store_||store_==="Todos"||o.store===store_)}).sort(function(a,b){return a.price-b.price})}
+
+/* ---------- render ---------- */
+function groupBy(items){var g={};items.forEach(function(i){var c=i.cat&&CATS.indexOf(i.cat)>-1?i.cat:"Otros";(g[c]=g[c]||[]).push(i)});return CATS.filter(function(c){return g[c]}).map(function(c){return[c,g[c].sort(function(a,b){return norm(a.name)<norm(b.name)?-1:1})]})}
+function emptyState(t,d,ex){return'<div class="card empty"><svg class="ill" viewBox="0 0 96 72" aria-hidden="true"><circle cx="36" cy="24" r="9" fill="var(--sale)"/><circle cx="54" cy="19" r="8" fill="var(--lemon)"/><circle cx="68" cy="26" r="7" fill="var(--c0)"/><path d="M12 32h72l-7 31a6 6 0 0 1-6 5H25a6 6 0 0 1-6-5z" fill="var(--deep)"/><path d="M31 42v15M48 42v15M65 42v15" stroke="var(--lemon)" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg><b>'+t+'</b>'+d+(ex?'<div style="margin-top:12px"><button class="btn" data-act="example">Cargar datos de ejemplo</button></div>':"")+'</div>'}
+
+var CAT_SVG=['<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19l8-8"/>','<path d="M3 12c3-4 7-5 11-3l5-3v12l-5-3c-4 2-8 1-11-3z"/><circle cx="8" cy="11" r=".8"/>','<path d="M8 3h8l2 4v14H6V7z"/><path d="M6 7h12M10 12h4"/>','<path d="M7 4h10v3H7zM6 7h12v13H6z"/><path d="M6 12h12"/>','<path d="M12 3v18M4 7.5l16 9M20 7.5l-16 9"/>','<path d="M9 3h6v4l2 3v11H7V10l2-3z"/>','<path d="M12 4l1.8 4.7 4.7 1.8-4.7 1.8L12 17l-1.8-4.7L5.5 10.5l4.7-1.8z"/>','<path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/>'];
+var METOD_SVG={horno:'<rect x="3" y="4" width="18" height="16" rx="2"/><rect x="6" y="9" width="12" height="8" rx="1"/><path d="M7 6.5h.01M10 6.5h.01"/>',microondas:'<rect x="3" y="5" width="18" height="14" rx="2"/><rect x="6" y="8" width="9" height="8" rx="1"/><path d="M18 9h.01M18 12h.01M18 15h.01"/>',induccion:'<rect x="3" y="14" width="18" height="6" rx="2"/><path d="M8 12c0-2 2-2 2-4M12 12c0-2 2-2 2-4M16 12c0-2 2-2 2-4"/>',airfryer:'<path d="M7 3h10l2 6v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9z"/><path d="M5 9h14M12 13v4"/>'};
+function catHead(c){var i=Math.max(0,CATS.indexOf(c));return'<div class="grp"><span class="cat c'+i+'"><svg viewBox="0 0 24 24">'+CAT_SVG[i]+'</svg></span><h3>'+esc(c)+"</h3></div>"}
+function renderKpis(){var ym=today().slice(0,7),pend=S.list.filter(function(i){return!i.done}),of=pend.filter(function(i){return offersFor(i.name,S.set.tienda).length}).length,g=S.baskets.filter(function(b){return b.date&&b.date.slice(0,7)===ym}).reduce(function(t,b){return t+(Number(b.total)||0)},0);
+  $("kP").textContent=S.pantry.length;$("kL").textContent=pend.length;$("kO").textContent=of;$("kG").textContent=eur(g)}
+function syncStores(){var all=NATIONAL.concat(REG[S.set.comunidad]||[]).concat(S.set.extra||[]);STORES.length=0;all.forEach(function(x){if(STORES.indexOf(x)<0)STORES.push(x)});if(STORES.indexOf(S.set.tienda)<0)S.set.tienda="Mercadona"}
+function favList(){return(S.set.favs||[]).filter(function(x){return STORES.indexOf(x)>-1})}
+function keepSel(id){var el=$(id),v=el.value||S.set.tienda;el.innerHTML=opts(STORES,STORES.indexOf(v)>-1?v:S.set.tienda)}
+function renderZonaControls(){
+  if(document.activeElement!==$("zCom"))$("zCom").innerHTML=opts(Object.keys(REG),S.set.comunidad);
+  if(document.activeElement!==$("zCP"))$("zCP").value=S.set.cp||"";var pv=PROV[S.set.comunidad]||[];$("zProv").hidden=pv.length<2;
+  if(document.activeElement!==$("zProv"))$("zProv").innerHTML=opts(pv,S.set.provincia)}
+function renderZona(){
+  var reg=REG[S.set.comunidad]||[],fav=S.set.favs||[],extra=S.set.extra||[];
+  function chip(x){return'<button class="chip" data-act="fav" data-s="'+esc(x)+'" aria-pressed="'+(fav.indexOf(x)>-1)+'">'+esc(x)+"</button>"}
+  function head(t,c){return'<div class="grp"><span class="cat c'+c+'"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h3>'+esc(t)+"</h3></div>"}
+  var h=head("En toda España",2)+'<div class="card zgrid">'+NATIONAL.map(chip).join("")+"</div>";
+  h+=head("Solo en "+S.set.comunidad,0)+(reg.length?'<div class="card zgrid">'+reg.map(chip).join("")+"</div>":'<div class="card sub">En esta zona funcionan sobre todo las cadenas nacionales.</div>');
+  if(extra.length)h+=head("Añadidos por ti",3)+'<div class="card zgrid">'+extra.map(function(x){return'<span class="chipx">'+chip(x)+'<button class="x" data-act="xdel" data-s="'+esc(x)+'" aria-label="Quitar '+esc(x)+'">×</button></span>'}).join("")+"</div>";
+  h+='<div class="sub" style="margin:12px 4px 0">Lista orientativa por comunidad. Muchas cadenas solo tienen tiendas en algunas provincias: si te falta una, añádela abajo.</div>';
+  $("l-zona").innerHTML=h}
+function slug(x){return norm(x).replace(/\s+/g,"-").slice(0,120)||uid()}
+function catFor(name,st){return S.catalog.filter(function(c){return same(c.name,name)&&(!st||st==="Todos"||c.store===st)}).sort(function(a,b){return a.price-b.price})}
+function effPrice(c){var o=offersFor(c.name,c.store)[0];return o&&o.price<c.price?o.price:c.price}
+function renderCatalog(){
+  var q=($("cQ").value||"").trim(),el=$("cRes");
+  if(!S.catalog.length&&!q){el.innerHTML='<div class="sub">Aún no hay precios guardados. Se irá llenando con lo que añadas a mano desde «Añadir un precio a mano».</div>';return}
+  if(!q){el.innerHTML='<div class="sub">'+S.catalog.length+' productos con precio. Escribe para buscar y comparar supermercados.</div>';return}
+  var nq=norm(q),res=S.catalog.filter(function(c){return norm(c.name).indexOf(nq)>-1||same(c.name,q)}).sort(function(a,b){return effPrice(a)-effPrice(b)}).slice(0,8);
+  if(!res.length){el.innerHTML='<div class="sub">No tengo «'+esc(q)+'» en el catálogo.</div><div class="row" style="margin-top:8px"><button class="btn small" data-act="cplain" data-q="'+esc(q)+'">Añadir a la lista sin precio</button></div>';return}
+  el.innerHTML=res.map(function(c,i){var of=offersFor(c.name,c.store)[0],p=effPrice(c);return'<div class="item"><div class="t"><b>'+esc(c.name)+'</b><div class="sub">'+esc(c.store)+(c.formato?" · "+esc(c.formato):"")+(i===0&&res.length>1?' <span class="badge b-pan">más barato</span>':"")+(of&&of.price<c.price?' <span class="badge b-sale">oferta</span>':"")+'</div></div><span class="price'+(p<c.price?" sale":"")+'"><b>'+eur(p)+"</b>"+(p<c.price?"<s>"+eur(c.price)+"</s>":"")+'</span><button class="btn small" data-act="cadd" data-id="'+c.id+'">Añadir</button><button class="x" data-act="cdel" data-id="'+c.id+'" aria-label="Quitar del catálogo">×</button></div>'}).join("")}
+function renderEstimate(){
+  var el=$("estimate"),pend=S.list.filter(function(i){return!i.done});el.hidden=!pend.length;if(!pend.length)return;
+  var t=0,n=0;pend.forEach(function(i){var p=i.price||((offersFor(i.name,S.set.tienda)[0]||catFor(i.name,S.set.tienda)[0]||{}).price)||0;if(p){n++;t+=p*((i.unit==="ud"||i.unit==="paquete")?(Number(i.qty)||1):1)}});
+  el.innerHTML='<div class="grow"><b style="font:800 21px var(--font-display)">≈ '+eur(t)+'</b><div class="sub">Total estimado · '+n+" de "+pend.length+" productos con precio</div></div>"}
+function renderPantry(){
+  var el=$("l-pantry");
+  if(!S.pantry.length){el.innerHTML=emptyState("La despensa está vacía","Añade productos a mano o haz una foto para que los detecte.",true);return}
+  el.innerHTML=groupBy(S.pantry).map(function(g){return catHead(g[0])+"<div class='card'>"+g[1].map(function(i){
+    return'<div class="item"><div class="t"><b>'+esc(i.name)+'</b>'+(i.ex?' <span class="badge b-old">ejemplo</span>':"")+'</div><span class="qty">'+esc(fmtQ(i.qty,i.unit))+'</span><button class="btn small" data-act="p2l" data-id="'+i.id+'" title="Pasar a la lista">Se acabó</button><button class="x" data-act="pdel" data-id="'+i.id+'" aria-label="Quitar '+esc(i.name)+'">×</button></div>'}).join("")+"</div>"}).join("");
+}
+function renderList(){
+  var el=$("l-list"),done=S.list.filter(function(i){return i.done}).length;renderEstimate();
+  $("btnToFinish").hidden=!done||S.finishing;$("btnClearDone").hidden=!done;$("finish").hidden=!S.finishing;
+  if(!S.list.length){el.innerHTML=emptyState("Lista vacía","Añade lo que necesitas o genera un menú y pasa lo que falta a la lista.",true);return}
+  el.innerHTML=groupBy(S.list).map(function(g){return catHead(g[0])+"<div class='card'>"+g[1].map(function(i){
+    var of=offersFor(i.name,S.set.tienda)[0],cp=catFor(i.name)[0];
+    return'<div class="item'+(i.done?" done":"")+'"><input class="check" type="checkbox" data-act="tick" data-id="'+i.id+'"'+(i.done?" checked":"")+' aria-label="Marcar '+esc(i.name)+'"><div class="t"><b>'+esc(i.name)+'</b><div class="sub">'+(i.from==="menu"?"Para el menú · ":"")+(i.price?eur(i.price)+(i.store?" en "+esc(i.store):"")+" · ":(!of&&cp?'<span class="badge b-old">desde '+eur(cp.price)+" · "+esc(cp.store)+"</span> ":""))+(of?'<span class="badge b-sale">'+eur(of.price)+" en "+esc(of.store)+"</span>":"")+(i.ex?' <span class="badge b-old">ejemplo</span>':"")+'</div></div><span class="qty">'+esc(fmtQ(i.qty,i.unit))+'</span><button class="x" data-act="ldel" data-id="'+i.id+'" aria-label="Quitar '+esc(i.name)+'">×</button></div>'}).join("")+"</div>"}).join("");
+}
+function ingStatus(n){return S.pantry.some(function(p){return same(p.name,n)})?"pan":S.list.some(function(p){return same(p.name,n)})?"list":"buy"}
+function missing(){
+  var out={};if(!S.menu)return[];
+  S.menu.recipes.forEach(function(r){r.ingredientes.forEach(function(g){
+    if(ingStatus(g.n)!=="buy")return;var k=norm(g.n)+"|"+g.u;
+    out[k]=out[k]||{name:g.n,unit:g.u,cat:g.cat,qty:0};out[k].qty+=(Number(g.q)||0)*S.set.comensales})});
+  return Object.keys(out).map(function(k){return out[k]});
+}
+function coverage(){
+  var tot=0,have=0;S.menu.recipes.forEach(function(r){r.ingredientes.forEach(function(g){tot++;if(ingStatus(g.n)!=="buy")have++})});
+  var pct=tot?Math.round(have/tot*100):0,kc=S.menu.recipes.filter(function(r){return r.kcal}),days=S.set.dias||1;
+  var sens=bannedKeys().length||S.set.kcal;
+  return'<div class="card stack" style="margin-top:12px"><div class="row"><span class="badge b-pan">'+pct+'% ya lo tienes</span><span class="sub">'+have+' de '+tot+' ingredientes están en la despensa o en tu lista</span></div>'+(kc.length?'<div class="sub">Media aproximada: '+Math.round(kc.reduce(function(s,r){return s+r.kcal},0)/kc.length)+' kcal y '+Math.round(kc.reduce(function(s,r){return s+r.prot},0)/kc.length)+' g de proteína por ración.</div>':"")+(sens?'<div class="sub">Las etiquetas «Posible…» son un aviso automático por nombre de ingrediente. Revisa siempre las etiquetas de los productos; este menú no sustituye a un médico ni a un dietista.</div>':"")+'</div>'}
+function renderMenu(){
+  $("comN").textContent=S.set.comensales;$("mDias").value=String(S.set.dias);
+  var el=$("l-menu");
+  if(!S.menu||!S.menu.recipes||!S.menu.recipes.length){el.innerHTML=emptyState("Todavía no hay menú","Elige comensales y aparatos y pulsa «Crear menú». Usaré lo que tengas en la despensa y en la lista.");return}
+  var n=S.set.comensales,html=coverage();
+  S.menu.recipes.forEach(function(r,idx){
+    html+='<div class="card recipe" style="margin-top:12px"><div class="sub">'+esc(r.dia)+" · "+esc(r.comida)+"</div><h2>"+esc(r.nombre)+"</h2>"+
+    '<div class="meta"><span class="mic m-'+r.metodo+'"><svg viewBox="0 0 24 24">'+(METOD_SVG[r.metodo]||"")+'</svg></span><select data-act="metodo" data-idx="'+idx+'" aria-label="Tipo de cocción">'+Object.keys(METODOS).map(function(k){return'<option value="'+k+'"'+(k===r.metodo?" selected":"")+'>'+METODOS[k]+"</option>"}).join("")+'</select><span class="badge b-old">'+esc(r.minutos)+' min</span>'+(r.kcal?'<span class="badge b-old">'+esc(r.kcal)+' kcal · '+esc(r.prot)+' g prot</span>':"")+allergenBadges(r)+'<span class="sub">para '+n+(n===1?" persona":" personas")+"</span></div>"+
+    r.ingredientes.map(function(g){var st=ingStatus(g.n);return'<div class="ing"><span>'+esc(g.n)+' <span class="badge b-'+st+'">'+(st==="pan"?"en despensa":st==="list"?"en tu lista":"comprar")+'</span></span><span class="q">'+esc(fmtQ((Number(g.q)||0)*n,g.u))+"</span></div>"}).join("")+
+    '<details><summary>Pasos</summary><ol>'+(r.pasos||[]).map(function(p){return"<li>"+esc(p)+"</li>"}).join("")+"</ol></details></div>"});
+  var m=missing();
+  html+='<div class="card stack" style="margin-top:12px"><h2>Falta por comprar</h2>'+(m.length?m.map(function(x){return'<div class="ing"><span>'+esc(x.name)+'</span><span class="q">'+esc(fmtQ(x.qty,x.unit))+"</span></div>"}).join("")+'<button class="btn primary" data-act="addMissing">Añadir '+m.length+' a la lista</button>':'<div class="sub">Con lo que tienes y lo que ya está en la lista no falta nada.</div>')+"</div>";
+  el.innerHTML=html;
+}
+function renderOfertas(){
+  var cur=S.filterStore||S.set.tienda||"Todos";
+  $("offStores").innerHTML=["Todos"].concat(favList().length?favList():STORES).map(function(s){return'<button class="chip" data-act="fstore" data-s="'+s+'" aria-pressed="'+(s===cur)+'">'+s+"</button>"}).join("");
+  var pend=S.list.filter(function(i){return!i.done}).map(function(i){return i.name});
+  $("askTxt").value="Revisa las ofertas"+(cur==="Todos"?(favList().length?" de "+favList().join(", "):""):" de "+cur)+(S.set.provincia?" (zona: "+S.set.provincia+")":"")+" para mi lista: "+(pend.join(", ")||"(lista vacía)");
+  var all=S.offers.filter(function(o){return cur==="Todos"||o.store===cur}).sort(function(a,b){return(activeOffer(b)-activeOffer(a))||(a.price-b.price)});
+  var inList=all.filter(function(o){return S.list.some(function(i){return!i.done&&same(i.name,o.product)})});
+  var rest=all.filter(function(o){return inList.indexOf(o)<0});
+  function card(o){var exp=!activeOffer(o),pct=o.was>o.price?Math.round((1-o.price/o.was)*100):0;
+    return'<div class="item"><div class="t"><b>'+esc(o.product)+'</b><div class="sub">'+esc(o.store)+(o.until?" · hasta "+esc(o.until.split("-").reverse().join("/")):"")+(o.note?" · "+esc(o.note):"")+(o.url&&/^https:\/\//.test(o.url)?' · <a href="'+esc(o.url)+'" target="_blank" rel="noopener noreferrer">ver</a>':"")+'</div></div>'+(exp?'<span class="badge b-old">caducada</span>':pct?'<span class="sticker">−'+pct+"%</span>":"")+'<span class="price sale"><b>'+eur(o.price)+"</b>"+(o.was?"<s>"+eur(o.was)+"</s>":"")+'</span><button class="x" data-act="odel" data-id="'+o.id+'" aria-label="Quitar oferta">×</button></div>'}
+  var h="";
+  if(inList.length)h+="<h3>En tu lista</h3><div class='card'>"+inList.map(card).join("")+"</div>";
+  if(rest.length)h+="<h3>"+(inList.length?"Otras ofertas":"Ofertas guardadas")+"</h3><div class='card'>"+rest.map(card).join("")+"</div>";
+  if(!all.length)h=emptyState("Aún no hay ofertas"+(cur==="Todos"?"":" en "+esc(cur)),"Apunta las ofertas que veas en el folleto o en la tienda con el formulario «Añadir una oferta a mano».");
+  $("l-ofertas").innerHTML=h;
+  var dow=String(new Date().getDay());document.querySelectorAll("#when [data-d]").forEach(function(el){el.classList.toggle("now",el.dataset.d.split(",").indexOf(dow)>-1)});
+}
+function renderGastos(){
+  var b=S.baskets.slice().sort(function(a,b){return a.date<b.date?-1:1}),el=$("l-gastos");
+  if(!b.length){el.innerHTML=emptyState("Sin cestas registradas","Cuando termines una compra desde la lista, guarda el total y aquí verás cómo evoluciona el gasto.");return}
+  var ym=today().slice(0,7),mes=b.filter(function(x){return x.date.slice(0,7)===ym}),tot=function(a){return a.reduce(function(s,x){return s+(Number(x.total)||0)},0)};
+  var media=tot(b)/b.length,last=b[b.length-1],prev=b[b.length-2],saved=b.reduce(function(s,x){return s+(Number(x.saved)||0)},0);
+  var bars=b.slice(-8),W=320,H=150,pl=8,pb=28,pt=18,max=Math.max.apply(null,bars.map(function(x){return Number(x.total)||0}))||1,bw=(W-pl*2)/bars.length,svg='<svg class="chart" viewBox="0 0 '+W+" "+H+'" role="img" aria-label="Importe de las últimas cestas">';
+  bars.forEach(function(x,i){var h=(Number(x.total)||0)/max*(H-pb-pt),bx=pl+i*bw+bw*.18,w=bw*.64;svg+='<rect class="bar'+(i===bars.length-1?' last':'')+'" x="'+bx.toFixed(1)+'" y="'+(H-pb-h).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3"/><text x="'+(bx+w/2).toFixed(1)+'" y="'+(H-pb-h-4).toFixed(1)+'" text-anchor="middle">'+Math.round(x.total)+'</text><text x="'+(bx+w/2).toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle">'+esc(x.date.slice(8,10)+"/"+x.date.slice(5,7))+"</text>"});
+  svg+='<line class="ax" x1="'+pl+'" x2="'+(W-pl)+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'"/></svg>';
+  var byStore={};b.forEach(function(x){var s=byStore[x.store]=byStore[x.store]||{t:0,n:0};s.t+=Number(x.total)||0;s.n++});
+  var diff=prev?(last.total-prev.total):0;
+  el.innerHTML='<div class="stats"><div class="stat"><b>'+eur(tot(mes))+'</b><span>Este mes ('+mes.length+" cestas)</span></div><div class=\"stat\"><b>"+eur(media)+'</b><span>Media por cesta</span></div><div class="stat"><b>'+eur(last.total)+'</b><span>Última'+(prev?(diff<=0?" · "+eur(-diff)+" menos":" · "+eur(diff)+" más")+" que la anterior":"")+'</span></div><div class="stat"><b>'+eur(saved)+'</b><span>Ahorrado con ofertas</span></div></div>'+
+  '<h3>Últimas cestas (€)</h3><div class="card">'+svg+'</div><h3>Por supermercado</h3><div class="card">'+Object.keys(byStore).sort(function(a,c){return byStore[c].t-byStore[a].t}).map(function(s){return'<div class="item"><div class="t"><b>'+esc(s)+'</b><div class="sub">'+byStore[s].n+' cestas · media '+eur(byStore[s].t/byStore[s].n)+'</div></div><span class="qty"><b style="color:var(--fg)">'+eur(byStore[s].t)+"</b></span></div>"}).join("")+'</div><h3>Historial</h3><div class="card">'+b.slice().reverse().map(function(x){return'<div class="item"><div class="t"><b>'+esc(x.date.split("-").reverse().join("/"))+" · "+esc(x.store)+'</b><div class="sub">'+(x.n||0)+" productos"+(x.saved?" · ahorro "+eur(x.saved):"")+'</div></div><span class="qty"><b style="color:var(--fg)">'+eur(x.total)+'</b></span><button class="x" data-act="bdel" data-id="'+x.id+'" aria-label="Borrar cesta">×</button></div>'}).join("")+"</div>";
+}
+function renderControls(){
+  $("mComidas").innerHTML=["Desayuno","Comida","Cena"].map(function(c){return'<button class="chip" data-act="comida" data-c="'+c+'" aria-pressed="'+(S.set.comidas.indexOf(c)>-1)+'">'+c+"</button>"}).join("");
+  $("mAparatos").innerHTML=Object.keys(METODOS).map(function(k){return'<button class="chip" data-act="aparato" data-k="'+k+'" aria-pressed="'+(S.set.aparatos.indexOf(k)>-1)+'">'+METODOS[k]+"</button>"}).join("");
+  if(document.activeElement!==$("mPref"))$("mPref").value=S.set.pref||"";
+  syncStores();$("storeSel").innerHTML=opts(STORES,S.set.tienda);keepSel("fStore");keepSel("oStore");keepSel("cStore");renderZonaControls();
+  $("mDieta").innerHTML=Object.keys(DIETAS).map(function(k){return'<option value="'+k+'"'+(k===(S.set.dieta||"normal")?" selected":"")+'>'+esc(DIETAS[k].l)+"</option>"}).join("");
+  if(document.activeElement!==$("mKcal"))$("mKcal").value=S.set.kcal||"";
+  $("mAlerg").innerHTML=ALERG.map(function(k){return'<button class="chip" data-act="alerg" data-k="'+k+'" aria-pressed="'+((S.set.alergenos||[]).indexOf(k)>-1)+'">'+esc(LBL[k])+"</button>"}).join("");
+}
+function render(){renderKpis();renderControls();renderPantry();renderList();renderMenu();renderOfertas();renderZona();renderCatalog();renderGastos();
+  var pend=S.list.filter(function(i){return!i.done}).length;document.querySelectorAll(".tab .n").forEach(function(n){n.remove()});
+  if(pend){var t=document.querySelector('[data-tab="lista"]');var s=document.createElement("span");s.className="n";s.textContent=pend;t.appendChild(s)}}
+function showTab(t){S.tab=t;document.querySelectorAll(".pane").forEach(function(p){p.hidden=p.id!=="p-"+t});document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected",String(b.dataset.tab===t))});try{localStorage.setItem("cesta-tab",t)}catch(e){}window.scrollTo(0,0)}
+
+/* ---------- acciones ---------- */
+function addPantry(it){var ex=S.pantry.find(function(p){return same(p.name,it.name)&&p.unit===it.unit});
+  if(ex)return store.upd("pantry",ex.id,{qty:(Number(ex.qty)||0)+(Number(it.qty)||0)});
+  return store.add("pantry",{name:it.name,qty:Number(it.qty)||1,unit:it.unit||"ud",cat:it.cat||"Otros",ts:Date.now(),ex:!!it.ex})}
+function addList(it){if(S.list.some(function(l){return same(l.name,it.name)&&!l.done}))return Promise.resolve();
+  return store.add("list",{name:it.name,qty:Number(it.qty)||1,unit:it.unit||"ud",cat:it.cat||"Otros",done:false,from:it.from||"manual",price:Number(it.price)||0,store:it.store||"",ts:Date.now(),ex:!!it.ex})}
+
+document.addEventListener("click",function(e){
+  var tb=e.target.closest(".tab");if(tb){showTab(tb.dataset.tab);return}
+  var b=e.target.closest("[data-act]");if(!b)return;var a=b.dataset.act,id=b.dataset.id;
+  if(a==="pdel")run(function(){return store.del("pantry",id)});
+  else if(a==="p2l")run(async function(){var p=S.pantry.find(function(x){return x.id===id});if(!p)return;await addList({name:p.name,qty:p.qty,unit:p.unit,cat:p.cat});await store.del("pantry",id);toast("«"+p.name+"» pasa a la lista")});
+  else if(a==="ldel")run(function(){return store.del("list",id)});
+  else if(a==="odel")run(function(){return store.del("offers",id)});
+  else if(a==="bdel")run(function(){return store.del("baskets",id)});
+  else if(a==="fstore"){S.filterStore=b.dataset.s;if(b.dataset.s!=="Todos"){S.set.tienda=b.dataset.s;saveSet()}renderOfertas();renderList();renderControls()}
+  else if(a==="comida"){var c=b.dataset.c,i=S.set.comidas.indexOf(c);if(i>-1&&S.set.comidas.length>1)S.set.comidas.splice(i,1);else if(i<0)S.set.comidas.push(c);saveSet();renderControls()}
+  else if(a==="aparato"){var k=b.dataset.k,j=S.set.aparatos.indexOf(k);if(j>-1&&S.set.aparatos.length>1)S.set.aparatos.splice(j,1);else if(j<0)S.set.aparatos.push(k);saveSet();renderControls()}
+  else if(a==="cadd")run(async function(){var c=S.catalog.find(function(x){return x.id===id});if(!c)return;await addList({name:c.name,qty:1,unit:"ud",cat:c.cat||"Otros",price:effPrice(c),store:c.store});toast("«"+c.name+"» añadido a la lista")});
+  else if(a==="cplain")run(async function(){await addList({name:b.dataset.q,qty:1,unit:"ud"});toast("Añadido a la lista")});
+  else if(a==="cdel")run(function(){return store.del("catalog",id)});
+  else if(a==="ccopy"){var v="Añade al catálogo el precio de «"+b.dataset.q+"» en "+(favList().join(", ")||S.set.tienda)+(S.set.provincia?" (zona: "+S.set.provincia+")":"");(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(function(){toast("Copiado: pégalo en el chat con Claude")},function(){toast(v)})}
+  else if(a==="fav"){var f=S.set.favs=S.set.favs||[],fi=f.indexOf(b.dataset.s);if(fi>-1)f.splice(fi,1);else f.push(b.dataset.s);saveSet();render()}
+  else if(a==="xdel"){S.set.extra=(S.set.extra||[]).filter(function(x){return x!==b.dataset.s});S.set.favs=(S.set.favs||[]).filter(function(x){return x!==b.dataset.s});saveSet();render()}
+  else if(a==="alerg"){var al=S.set.alergenos=S.set.alergenos||[],q=al.indexOf(b.dataset.k);if(q>-1)al.splice(q,1);else al.push(b.dataset.k);saveSet();renderControls();renderMenu()}
+  else if(a==="com-"||a==="com+"){S.set.comensales=Math.max(1,Math.min(20,S.set.comensales+(a==="com+"?1:-1)));saveSet();renderMenu()}
+  else if(a==="addMissing")run(async function(){var m=missing();for(var x of m)await addList({name:x.name,qty:Math.ceil(x.qty*100)/100,unit:x.unit,cat:x.cat,from:"menu"});toast(m.length+" productos añadidos a la lista")});
+  else if(a==="example")run(loadExample);
+});
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.dataset.act==="tick")run(function(){return store.upd("list",t.dataset.id,{done:t.checked})});
+  else if(t.dataset.act==="metodo")changeMethod(Number(t.dataset.idx),t.value);
+  else if(t.id==="storeSel"){S.set.tienda=t.value;S.filterStore=t.value;saveSet();renderList();renderOfertas()}
+  else if(t.id==="mDias"){S.set.dias=Number(t.value);saveSet()}
+  else if(t.id==="zCom"){S.set.comunidad=t.value;S.set.provincia=(PROV[t.value]||[""])[0];saveSet();render()}
+  else if(t.id==="zProv"){S.set.provincia=t.value;saveSet();renderOfertas()}
+  else if(t.id==="mDieta"){S.set.dieta=t.value;saveSet();renderMenu()}
+  else if(t.id==="mKcal"){S.set.kcal=Number(t.value)||0;saveSet()}
+  else if(t.id==="mPref"){S.set.pref=t.value;saveSet()}
+});
+$("fPantry").addEventListener("submit",function(e){e.preventDefault();var n=$("pName").value.trim();if(!n)return;run(async function(){await addPantry({name:n,qty:$("pQty").value,unit:$("pUnit").value});$("pName").value="";$("pName").focus()})});
+$("fList").addEventListener("submit",function(e){e.preventDefault();var n=$("lName").value.trim();if(!n)return;run(async function(){await addList({name:n,qty:$("lQty").value,unit:$("lUnit").value});$("lName").value="";$("lName").focus()})});
+$("fOffer").addEventListener("submit",function(e){e.preventDefault();run(async function(){await store.add("offers",{product:$("oProd").value.trim(),store:$("oStore").value,price:Number($("oPrice").value),was:Number($("oWas").value)||0,until:$("oUntil").value||"",note:"añadida a mano",ts:Date.now()});$("fOffer").reset();toast("Oferta guardada")})});
+$("fExtra").addEventListener("submit",function(e){e.preventDefault();var n=$("zExtra").value.trim();if(!n)return;S.set.extra=S.set.extra||[];if(S.set.extra.indexOf(n)<0&&NATIONAL.indexOf(n)<0)S.set.extra.push(n);saveSet();$("zExtra").value="";render();toast("«"+n+"» añadido")});
+$("cQ").addEventListener("input",renderCatalog);
+$("fCat").addEventListener("submit",function(e){e.preventDefault();var n=$("cName").value.trim(),p=Number($("cPrice").value);if(!n||!(p>0))return;run(async function(){await store.set("catalog",slug($("cStore").value+" "+n),{name:n,store:$("cStore").value,price:p,formato:$("cFormato").value.trim(),cat:$("cCat").value,src:"manual",ts:Date.now()});$("fCat").reset();toast("Precio guardado en el catálogo")})});
+$("zCP").addEventListener("input",function(){var v=this.value.replace(/\D/g,"").slice(0,5);this.value=v;var m=$("zCPmsg");if(v.length<5){m.textContent="Escríbelo y detecto tu zona";return}var pr=CP_PROV[v.slice(0,2)];if(!pr){m.textContent="Código postal no reconocido";return}var co=Object.keys(PROV).find(function(c){return PROV[c].indexOf(pr)>-1});S.set.cp=v;S.set.provincia=pr;if(co)S.set.comunidad=co;saveSet();render();$("zCPmsg").textContent=pr+" · "+co});
+$("btnCopy").addEventListener("click",function(){var v=$("askTxt").value;(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(function(){toast("Copiado")},function(){$("askTxt").select();toast("Selecciona y copia el texto")})});
+$("btnToFinish").addEventListener("click",function(){S.finishing=true;$("fTotal").value="";renderList()});
+$("btnClearDone").addEventListener("click",function(){run(async function(){for(var i of S.list.filter(function(x){return x.done}))await store.del("list",i.id)})});
+$("btnFinish").addEventListener("click",function(){
+  var total=Number($("fTotal").value);if(!(total>0)){toast("Escribe el total de la cesta");return}
+  var st=$("fStore").value;
+  run(async function(){
+    var done=S.list.filter(function(i){return i.done}),saved=0;
+    done.forEach(function(i){var o=offersFor(i.name,st)[0];if(o&&o.was>o.price)saved+=(o.was-o.price)*Math.max(1,Number(i.qty)||1)});
+    for(var i of done){await addPantry({name:i.name,qty:i.qty,unit:i.unit,cat:i.cat});await store.del("list",i.id)}
+    await store.add("baskets",{date:today(),store:st,total:total,saved:Math.round(saved*100)/100,n:done.length,ts:Date.now()});
+    S.finishing=false;renderList();toast("Cesta guardada: "+eur(total));showTab("gastos")});
+});
+
+/* ---------- ejemplo ---------- */
+async function loadExample(){
+  var p=[["Arroz",500,"g","Despensa seca"],["Huevos",6,"ud","Lácteos y huevos"],["Pasta",400,"g","Despensa seca"],["Tomate frito",2,"ud","Despensa seca"],["Aceite de oliva",1,"l","Despensa seca"],["Pechuga de pollo",600,"g","Carne y pescado"]];
+  var l=[["Leche",6,"l","Lácteos y huevos"],["Plátanos",1,"kg","Fruta y verdura"],["Yogur natural",8,"ud","Lácteos y huevos"]];
+  for(var x of p)await addPantry({name:x[0],qty:x[1],unit:x[2],cat:x[3],ex:true});
+  for(var y of l)await addList({name:y[0],qty:y[1],unit:y[2],cat:y[3],ex:true});
+  toast("Datos de ejemplo cargados")}
+
+/* ---------- IA: menú, cocción y foto ---------- */
+function sampleErr(e){var c=e&&e.code;if(e&&e.name==="AbortError")return"";return c==="ia_off"?"La IA todavía no está activada en esta app (falta configurarla, mira la guía).":c==="rate_limited"?"Has llegado al límite de usos de hoy. Mañana podrás seguir.":c==="cancelled"?"":c==="invalid_json"?"No he podido leer la respuesta. Prueba otra vez.":"No ha funcionado. Inténtalo de nuevo."}
+function listTxt(a){return a.length?a.map(function(i){return i.name+" ("+i.qty+" "+i.unit+")"}).join(", "):"nada"}
+$("btnGen").addEventListener("click",async function(){
+  
+  var ctl=new AbortController();S.genCtl=ctl;$("btnGen").disabled=true;$("btnWeek").disabled=true;$("btnStop").hidden=false;$("genMsg").textContent="Pensando… puede tardar un minuto";
+  var prompt="Eres un cocinero que planifica menús familiares en España. Responde SOLO con JSON, sin texto extra.\n"+
+  "Comensales: "+S.set.comensales+". Días: "+S.set.dias+". Comidas de cada día: "+S.set.comidas.join(", ")+".\n"+
+  "Aparatos disponibles (usa solo estos como valor de metodo): "+S.set.aparatos.join(", ")+" (horno, microondas, induccion = placa de inducción, airfryer = air fryer).\n"+
+  "Dieta, creencia o plan: "+(DIETAS[S.set.dieta]||DIETAS.normal).p+".\n"+"Alérgenos que NO pueden aparecer en ningún ingrediente: "+((S.set.alergenos||[]).length?S.set.alergenos.map(function(k){return LBL[k]}).join(", "):"ninguno")+".\n"+(S.set.kcal?"Objetivo aproximado: "+S.set.kcal+" kcal al día por persona; ajusta raciones y reparte la proteína entre comidas.\n":"")+"kcal y prot (gramos de proteína) de cada receta son por ración y persona.\nPreferencias adicionales: "+(S.set.pref||"ninguna")+".\n"+
+  "En la despensa tengo: "+listTxt(S.pantry)+".\nEn mi lista de la compra ya tengo: "+listTxt(S.list.filter(function(i){return!i.done}))+".\n"+
+  "Prioriza ingredientes de la despensa y de la lista para comprar poco más. Varía los aparatos. Recetas realistas y sencillas.\n"+(S.set.dias>=5?"Es un menú semanal completo: reparte bien las proteínas, reutiliza sobras y cocina por lotes cuando encaje.\n":"")+
+  'Formato exacto: {"recipes":[{"dia":"Lunes","comida":"Comida","nombre":"...","metodo":"horno|microondas|induccion|airfryer","minutos":25,"kcal":550,"prot":30,"ingredientes":[{"n":"arroz","q":80,"u":"g","cat":"Despensa seca"}],"pasos":["..."]}]}\n'+
+  'En ingredientes, q es la cantidad POR PERSONA (para que se pueda escalar), u es una de ud, g, kg, ml, l; cat es una de: '+CATS.join(", ")+". Nombres de ingredientes genéricos y en singular o plural natural (arroz, huevos, pechuga de pollo). Sin sal, agua ni aceite básico. Máximo 8 ingredientes y 6 pasos por receta.";
+  try{
+    var r=await sample.json(prompt,{signal:ctl.signal,cache:false});
+    var rec=(r&&r.recipes||[]).filter(function(x){return x&&x.nombre&&Array.isArray(x.ingredientes)}).map(function(x){return{dia:String(x.dia||""),comida:String(x.comida||""),nombre:String(x.nombre),metodo:METODOS[x.metodo]?x.metodo:"induccion",minutos:Number(x.minutos)||30,kcal:Math.round(Number(x.kcal))||0,prot:Math.round(Number(x.prot))||0,ingredientes:x.ingredientes.filter(function(g){return g&&g.n}).map(function(g){return{n:String(g.n),q:Number(g.q)||0,u:UNITS.indexOf(g.u)>-1?g.u:"ud",cat:CATS.indexOf(g.cat)>-1?g.cat:"Otros"}}),pasos:(x.pasos||[]).map(String)}});
+    if(!rec.length)throw{code:"invalid_json"};
+    S.menu={recipes:rec,ts:Date.now()};renderMenu();$("genMsg").textContent="";
+    run(function(){return store.set("menu","current",S.menu)});
+  }catch(e){$("genMsg").textContent=sampleErr(e)}
+  finally{$("btnGen").disabled=false;$("btnWeek").disabled=false;$("btnStop").hidden=true;S.genCtl=null}
+});
+$("btnStop").addEventListener("click",function(){if(S.genCtl)S.genCtl.abort()});
+$("btnWeek").addEventListener("click",function(){S.set.dias=7;if(S.set.comidas.length<2)S.set.comidas=["Comida","Cena"];saveSet();renderMenu();renderControls();$("btnGen").click()});
+async function changeMethod(idx,metodo){
+  var r=S.menu&&S.menu.recipes[idx];if(!r||!sample){renderMenu();return}
+  toast("Adaptando a "+METODOS[metodo]+"…");
+  try{
+    var o=await sample.json("Adapta esta receta para cocinarla con "+METODOS[metodo]+" ("+metodo+"). Responde SOLO con JSON: {\"minutos\":number,\"pasos\":[\"...\"]}. Máximo 6 pasos, con temperaturas o potencias y tiempos concretos.\nReceta: "+r.nombre+"\nIngredientes por persona: "+r.ingredientes.map(function(g){return g.n+" "+g.q+" "+g.u}).join(", "),{modelTier:"quick",cache:false});
+    var next=JSON.parse(JSON.stringify(S.menu));next.recipes[idx].metodo=metodo;next.recipes[idx].minutos=Number(o.minutos)||r.minutos;next.recipes[idx].pasos=(o.pasos||[]).map(String);
+    S.menu=next;renderMenu();run(function(){return store.set("menu","current",S.menu)});
+  }catch(e){toast(sampleErr(e)||"No se pudo adaptar");renderMenu()}
+}
+$("btnPhoto").addEventListener("click",function(){$("photoIn").click()});
+$("photoIn").addEventListener("change",async function(){
+  var files=Array.prototype.slice.call(this.files||[]);this.value="";if(!files.length||!sample)return;
+  $("photoRes").innerHTML='<div class="sub">Mirando la foto…</div>';$("btnPhoto").disabled=true;
+  try{
+    var out=await sample.json("Estas fotos muestran una despensa, nevera o compra. Identifica los productos alimentarios y de hogar visibles. Responde SOLO con un array JSON de {\"name\":string,\"qty\":number,\"unit\":\"ud|g|kg|ml|l|paquete\",\"cat\":string}. name en español, genérico (sin marca salvo que sea esencial), sin repetidos. qty es tu mejor estimación (1 si dudas). cat es una de: "+CATS.join(", ")+". Si no se ve ningún producto, responde [].",{images:files.slice(0,6),cache:false});
+    S.photoItems=(Array.isArray(out)?out:[]).filter(function(x){return x&&x.name}).map(function(x){return{name:String(x.name),qty:Number(x.qty)||1,unit:UNITS.indexOf(x.unit)>-1?x.unit:"ud",cat:CATS.indexOf(x.cat)>-1?x.cat:"Otros",on:true}});
+    renderPhoto();
+  }catch(e){$("photoRes").innerHTML='<div class="sub">'+esc(sampleErr(e)||"No se pudo analizar la foto.")+"</div>"}
+  finally{$("btnPhoto").disabled=false}
+});
+function renderPhoto(){
+  var el=$("photoRes");if(!S.photoItems.length){el.innerHTML='<div class="sub">No he reconocido productos. Prueba con una foto más cercana y con buena luz.</div>';return}
+  el.innerHTML='<h3>Detectado, revisa antes de añadir</h3>'+S.photoItems.map(function(x,i){return'<div class="photoRow"><input class="check" type="checkbox" data-pi="'+i+'"'+(x.on?" checked":"")+' aria-label="Añadir '+esc(x.name)+'"><input class="name" data-pn="'+i+'" value="'+esc(x.name)+'" aria-label="Nombre"><input type="number" data-pq="'+i+'" value="'+x.qty+'" min="0" step="any" aria-label="Cantidad"><span class="qty">'+esc(x.unit)+"</span></div>"}).join("")+'<div class="row" style="margin-top:10px"><button class="btn primary" id="photoAdd" type="button">Añadir a la despensa</button><button class="btn ghost" id="photoNo" type="button">Descartar</button></div>';
+}
+$("photoRes").addEventListener("input",function(e){var t=e.target;if(t.dataset.pn!=null)S.photoItems[t.dataset.pn].name=t.value;if(t.dataset.pq!=null)S.photoItems[t.dataset.pq].qty=Number(t.value)||0});
+$("photoRes").addEventListener("change",function(e){var t=e.target;if(t.dataset.pi!=null)S.photoItems[t.dataset.pi].on=t.checked});
+$("photoRes").addEventListener("click",function(e){
+  if(e.target.id==="photoNo"){S.photoItems=[];$("photoRes").innerHTML="";return}
+  if(e.target.id==="photoAdd")run(async function(){var sel=S.photoItems.filter(function(x){return x.on&&x.name.trim()});for(var x of sel)await addPantry(x);S.photoItems=[];$("photoRes").innerHTML="";toast(sel.length+" productos en la despensa")});
+});
+
+/* ---------- arranque ---------- */
+var TABS=["despensa","lista","menu","ofertas","zona","gastos"];
+function authBox(html){$("auth").hidden=false;$("authBox").innerHTML=html}
+function hideAuth(){$("auth").hidden=true}
+var LOGO='<div class="logo"><img src="icons/icon-192.png" alt=""><h1>Cestea</h1></div>';
+function showAuth(mode,msg,ok){
+  var m=msg?'<div class="msg'+(ok?" ok":"")+'">'+esc(msg)+'</div>':'<div class="msg"></div>';
+  if(mode==="error"){authBox(LOGO+'<div class="card"><p>No se ha podido cargar la conexión con el servidor. Comprueba tu internet y recarga la página.</p></div>');return}
+  if(mode==="login"||mode==="registro"){
+    var reg=mode==="registro";
+    authBox(LOGO+'<p class="lead">Despensa, compra, menús y ofertas para toda la familia.</p><form class="card" id="fAuth"><h2>'+(reg?"Crear cuenta":"Entrar")+'</h2>'+
+    '<label for="aMail">Correo</label><input id="aMail" type="email" autocomplete="email" required>'+
+    '<label for="aPass">Contraseña'+(reg?" (mínimo 8 caracteres)":"")+'</label><input id="aPass" type="password" minlength="'+(reg?8:1)+'" autocomplete="'+(reg?"new-password":"current-password")+'" required>'+m+
+    '<div class="row" style="margin-top:8px"><button class="btn primary" type="submit">'+(reg?"Crear cuenta":"Entrar")+'</button></div>'+
+    '<div><button class="link" type="button" data-go="'+(reg?"login":"registro")+'">'+(reg?"Ya tengo cuenta":"Crear una cuenta nueva")+'</button></div>'+
+    (reg?"":'<div><button class="link" type="button" data-go="olvido">He olvidado la contraseña</button></div>')+'</form>');
+    return}
+  if(mode==="olvido"){
+    authBox(LOGO+'<form class="card" id="fOlvido"><h2>Recuperar contraseña</h2><p class="sub">Te enviamos un enlace al correo para elegir una nueva.</p><label for="aMail">Correo</label><input id="aMail" type="email" required>'+m+
+    '<div class="row" style="margin-top:8px"><button class="btn primary" type="submit">Enviar enlace</button></div><div><button class="link" type="button" data-go="login">Volver</button></div></form>');return}
+  if(mode==="nueva"){
+    authBox(LOGO+'<form class="card" id="fNueva"><h2>Nueva contraseña</h2><label for="aPass">Contraseña (mínimo 8 caracteres)</label><input id="aPass" type="password" minlength="8" autocomplete="new-password" required>'+m+
+    '<div class="row" style="margin-top:8px"><button class="btn primary" type="submit">Guardar</button></div></form>');return}
+  if(mode==="hogar"){
+    authBox(LOGO+'<p class="lead">Un último paso: crea tu familia o únete a la que ya existe.</p>'+
+    '<form class="card" id="fCrear"><h2>Crear la familia</h2><label for="hNom">Nombre de la familia</label><input id="hNom" placeholder="Ej. Casa Díaz" required>'+
+    '<label for="hYo">Tu nombre</label><input id="hYo" placeholder="Ej. Pedro" required><div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Crear familia</button></div></form>'+
+    '<form class="card" id="fUnir"><h2>Tengo un código</h2><label for="hCod">Código de la familia</label><input id="hCod" placeholder="ABCD2345" autocapitalize="characters" required>'+
+    '<label for="hYo2">Tu nombre</label><input id="hYo2" placeholder="Ej. Ana" required>'+m+'<div class="row" style="margin-top:12px"><button class="btn primary" type="submit">Unirme</button></div></form>'+
+    '<div><button class="link" type="button" data-go="salir">Cerrar sesión</button></div>');return}
+}
+function errTxt(e){var t=String(e&&e.message||e);
+  if(/Invalid login/i.test(t))return"Correo o contraseña incorrectos.";
+  if(/already registered|already been registered/i.test(t))return"Ese correo ya tiene cuenta. Prueba a entrar.";
+  if(/Password should/i.test(t))return"La contraseña es demasiado corta o débil.";
+  if(/rate limit|too many/i.test(t))return"Demasiados intentos. Espera unos minutos.";
+  if(/codigo_invalido/.test(t))return"Ese código no existe. Revísalo con quien te invitó.";
+  if(/ya_en_hogar/.test(t))return"Esta cuenta ya pertenece a una familia.";
+  if(/Failed to fetch|NetworkError/i.test(t))return"Sin conexión. Inténtalo de nuevo.";
+  return"No ha funcionado: "+t}
+$("authBox").addEventListener("click",function(e){var g=e.target.dataset&&e.target.dataset.go;if(!g)return;
+  if(g==="salir"){sb.auth.signOut();return}showAuth(g)});
+$("authBox").addEventListener("submit",async function(e){
+  e.preventDefault();var id=e.target.id,btn=e.target.querySelector("button[type=submit]");btn.disabled=true;
+  try{
+    if(id==="fAuth"){
+      var mail=$("aMail").value.trim(),pw=$("aPass").value,reg=/Crear cuenta/.test(e.target.querySelector("h2").textContent);
+      if(reg){var r=await sb.auth.signUp({email:mail,password:pw});if(r.error)throw r.error;
+        if(!r.data.session){showAuth("login","Te hemos enviado un correo para confirmar la cuenta. Después, entra aquí.",true);return}}
+      else{var r2=await sb.auth.signInWithPassword({email:mail,password:pw});if(r2.error)throw r2.error}
+      await entrar();
+    }else if(id==="fOlvido"){
+      var r3=await sb.auth.resetPasswordForEmail($("aMail").value.trim(),{redirectTo:location.href.split("#")[0]});if(r3.error)throw r3.error;
+      showAuth("login","Si el correo existe, te llegará un enlace en unos minutos.",true);
+    }else if(id==="fNueva"){
+      var r4=await sb.auth.updateUser({password:$("aPass").value});if(r4.error)throw r4.error;await entrar();
+    }else if(id==="fCrear"){
+      var r5=await sb.rpc("crear_hogar",{p_nombre:$("hNom").value,p_mi_nombre:$("hYo").value});if(r5.error)throw r5.error;
+      H=r5.data;await abrir();
+    }else if(id==="fUnir"){
+      var r6=await sb.rpc("unirse_hogar",{p_codigo:$("hCod").value,p_mi_nombre:$("hYo2").value});if(r6.error)throw r6.error;
+      H=r6.data;await abrir();
+    }
+  }catch(err){var box=$("authBox").querySelector(".msg");if(box){box.className="msg";box.textContent=errTxt(err)}btn.disabled=false}
+});
+async function abrir(){lsSet("cestea-h",H);await loadAll();subscribe();hideAuth();arrancar()}
+async function entrar(){
+  var r=await sb.rpc("mi_hogar");
+  if(r.error){
+    var h=lsGet("cestea-h");
+    if(h&&/Failed to fetch|NetworkError|Load failed/i.test(String(r.error.message))){H=h;cache=lsGet("cestea-cache-"+H.id)||{};hideAuth();arrancar();markSync(false);return}
+    showAuth("login",errTxt(r.error));return}
+  if(!r.data){showAuth("hogar");return}
+  H=r.data;await abrir();
+}
+function renderFamilia(){
+  var el=$("famBody");if(!el||!H)return;
+  el.innerHTML='<div><b>'+esc(H.nombre)+'</b></div><div class="sub">Para que otra persona se una, dale este código y que lo escriba al crear su cuenta:</div>'+
+  '<div class="row"><span class="code" id="famCode">'+esc(H.codigo)+'</span><button class="btn" id="famCopy" type="button">Copiar</button><button class="btn" id="famShare" type="button">Compartir</button></div>'+
+  '<ul class="members">'+(H.miembros||[]).map(function(m){return"<li>"+esc(m.nombre)+(m.rol==="admin"?' <span class="sub">· administra</span>':"")+"</li>"}).join("")+"</ul>"+
+  '<details><summary>Cómo instalar la app</summary><p class="sub"><b>iPhone:</b> abre el enlace en Safari, pulsa Compartir y «Añadir a pantalla de inicio».<br><b>Android:</b> abre el enlace en Chrome, menú ⋮ y «Instalar aplicación» o «Añadir a pantalla de inicio».</p></details>'+
+  '<div class="row" style="margin-top:8px"><button class="btn ghost" id="famOut" type="button">Cerrar sesión</button><button class="btn ghost" id="famLeave" type="button">Salir de la familia</button></div>'}
+$("famCard").addEventListener("click",function(e){var id=e.target.id;
+  if(id==="famCopy"){var v=H.codigo;(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(v):Promise.reject()).then(function(){toast("Código copiado")},function(){toast("Código: "+v)})}
+  else if(id==="famShare"){var t="Únete a «"+H.nombre+"» en Cestea: "+location.href.split("#")[0]+" · código "+H.codigo;if(navigator.share)navigator.share({text:t}).catch(function(){});else toast(t)}
+  else if(id==="famOut"){sb.auth.signOut()}
+  else if(id==="famLeave"){if(confirm("¿Salir de la familia? Dejarás de ver su despensa y su lista. Si eres la última persona, se borran los datos."))sb.rpc("salir_hogar").then(function(){try{localStorage.removeItem("cestea-h")}catch(e){}location.reload()})}
+});
+function arrancar(){
+  if(started)return;started=true;
+  ["pantry","list","offers","catalog","baskets"].forEach(function(c){var k={pantry:"pantry",list:"list",offers:"offers",catalog:"catalog",baskets:"baskets"}[c];store.watch(c,function(r){S[k]=r;render()})});
+  store.watch("settings",function(r){var m=r.find(function(x){return x.id==="main"});if(m){Object.keys(S.set).forEach(function(k){if(m[k]!=null)S.set[k]=m[k]})}render()});
+  store.watch("menu",function(r){var m=r.find(function(x){return x.id==="current"});S.menu=m&&m.recipes?m:null;render()});
+  renderFamilia();render();
+  document.addEventListener("visibilitychange",function(){if(!document.hidden&&sb&&H){loadAll().then(function(){markSync(true)}).catch(function(){markSync(false)});sb.rpc("mi_hogar").then(function(r){if(r.data){H=r.data;renderFamilia()}})}});
+}
+$("btnBuscar").addEventListener("click",async function(){
+  var b=this,m=$("buscarMsg");b.disabled=true;m.textContent="Buscando en folletos y webs… puede tardar hasta un par de minutos.";
+  try{
+    var ss=await sb.auth.getSession();var tok=ss.data.session&&ss.data.session.access_token;if(!tok)throw 0;
+    var res=await fetch(window.CESTEA.url+"/functions/v1/ofertas",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok,apikey:window.CESTEA.key},body:"{}"});
+    var j=await res.json().catch(function(){return{}});
+    if(res.status===404||j.error==="sin_clave")m.textContent="La búsqueda todavía no está activada (falta configurarla, mira la guía).";
+    else if(res.status===429)m.textContent="Has llegado al límite de usos de hoy. Mañana podrás seguir.";
+    else if(!res.ok)m.textContent="No ha funcionado. Inténtalo de nuevo en un rato.";
+    else if(j.motivo==="lista_vacia")m.textContent="Añade antes productos a la lista de la compra.";
+    else{await loadAll();m.textContent=j.guardadas?"Listo: "+j.guardadas+" ofertas encontradas.":"No he encontrado ofertas fiables esta vez."}
+  }catch(e){m.textContent="No ha funcionado. Revisa tu conexión e inténtalo de nuevo."}
+  b.disabled=false;
+});
+async function boot(){
+  ["pUnit","lUnit"].forEach(function(id){$(id).innerHTML=opts(UNITS,"ud")});$("cCat").innerHTML=opts(CATS,"Otros");
+  syncStores();["fStore","oStore"].forEach(function(id){$(id).innerHTML=opts(STORES,S.set.tienda)});
+  $("btnPhoto").hidden=false;$("photoHelp").textContent="Haz una foto a la despensa o la nevera y la reviso (usa IA).";
+  var t="lista";try{t=localStorage.getItem("cesta-tab")||"lista"}catch(e){}
+  showTab(TABS.indexOf(t)>-1?t:"lista");render();
+  if(!window.supabase||!window.CESTEA){showAuth("error");return}
+  sb=window.supabase.createClient(window.CESTEA.url,window.CESTEA.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  sb.auth.onAuthStateChange(function(ev){if(ev==="PASSWORD_RECOVERY")showAuth("nueva");else if(ev==="SIGNED_OUT"){try{localStorage.removeItem("cestea-h")}catch(e){}location.reload()}});
+  var r=await sb.auth.getSession();
+  if(!r.data.session){showAuth("login");return}
+  await entrar();
+}
+if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
+showTab("lista");boot();
+})();
+</script>
+</body></html>
